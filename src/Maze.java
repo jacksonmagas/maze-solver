@@ -5,6 +5,51 @@ import javalib.impworld.WorldScene;
 import javalib.worldimages.*;
 import tester.*;
 
+// class to run maze or call tester, written after the fact to enable jar creation
+// calling with argument test will run tests
+class Runner {
+  private enum ArgType {
+    height, width, none
+  }
+  
+  public static void main(String[] argv) {
+    if (argv.length >= 1 && (argv[0].equalsIgnoreCase("-t") || argv[0].equalsIgnoreCase("--test"))) {
+      String[] arg = {"ExamplesKruskal"};
+      tester.Main.main(arg);
+    } else {
+      int width = 100;
+      int height = 60;
+      ArgType current = ArgType.none;
+      for (String arg : argv) {
+        switch (current) {
+        case height:
+          height = Integer.parseInt(arg);
+          current = ArgType.none;
+          break;
+        case width:
+          width = Integer.parseInt(arg);
+          current = ArgType.none;
+          break;
+        case none:
+          switch (arg) {
+            case "-h":
+            case "--height":
+              current = ArgType.height;
+              break;
+            case "-w":
+            case "--width":
+              current = ArgType.width;
+              break;
+            default:
+              current = ArgType.none;
+          }
+        }
+      }
+      new MazeGenerator(width, height, new Random()).bigBang(1500, 800, 0.01);
+    }
+  }
+}
+
 //represents a node in the graph maze
 class Node {
   int row;
